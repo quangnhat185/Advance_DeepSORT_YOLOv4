@@ -1,0 +1,8 @@
+Dev/ 
+__pycache__
+Logs/ 
+test.py 
+yolov4/yolov4.weights 
+deep_sort/.svn 
+tools/.svn 
+*.pyc 
