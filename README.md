@@ -2,11 +2,12 @@
 
 
 ### TO-DO-LIST
-- [ ] Write bounding boxes drawing functions in [helper.py](./helper.py) and deloy it in the main function
-- [ ] Fix the colors issue. The idea is there each object will be assigned to only once color
 - [ ] [tracking.py](./tracking.py): There should be two modes: tracking all pre-indicate objects or tracking an object following its id
 - [ ] [counting.py](./counting.py) Drawing a line and count the number of persons get in and get our the line
-- [ ] The running scripts should contains parsing arguments as following:
+- [ ] Function to save video from input argument
+- [x] Write bounding boxes drawing functions in [helper.py](./helper.py) and deloy it in the main function
+- [x] Fix the colors issue. The idea is there each object will be assigned to only once color
+- [x] The running scripts should contains parsing arguments as following:
   - Video path -> String
   - Tracking mode (if available) -> 0 , 1
   - Threshold -> float
@@ -22,12 +23,19 @@ optional arguments:
   -h, --help            show this help message and exit
   -v VIDEO, --video VIDEO
                         Path to video file
-  -o OBJECT [OBJECT ...], --object OBJECT [OBJECT ...]
+  -o OBJECTS [OBJECTS ...], --objects OBJECTS [OBJECTS ...]
                         List of tracked objects
   -c CONF, --conf CONF  Confident threshold (deafult=0.3)
   -n NMS, --nms NMS     NMS threshold (default=0.4)
   -d MCD, --mcd MCD     Max cosin distance (default=0.5)
-  -f FREQ, --freq FREQ  Detection update frequency in second (default=1.0)
+  -f FREQ, --freq FREQ  Detection update frequency in second (default=2.0)
   -m MODE, --mode MODE  0: Tracking object by class name (default)
-                        1: Tracking object by ID
+                        1: Tracking object by ID number
+  -cl COLORS [COLORS ...], --colors COLORS [COLORS ...]
+                        List of colors
+  -s SAVE, --save SAVE  Save output video (True/False)
+```
+
+```bash
+python tracking.py -v test_videos/test_video_01.mp4 -o car
 ```
