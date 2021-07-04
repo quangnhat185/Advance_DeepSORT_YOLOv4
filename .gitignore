@@ -6,3 +6,4 @@ yolov4/yolov4.weights
 deep_sort/.svn 
 tools/.svn 
 *.pyc 
+push_git.sh 
