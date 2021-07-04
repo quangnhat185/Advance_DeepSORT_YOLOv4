@@ -1,3 +1,51 @@
+import argparse
+import textwrap
+# Argparse
+parser = argparse.ArgumentParser(
+    usage='use "python %(prog)s --help" for more information',
+    formatter_class=argparse.RawTextHelpFormatter
+    )
+parser.add_argument("-v","--video",
+                    type=str, 
+                    required=True, 
+                    help="Path to video file")
+parser.add_argument("-o","--object", 
+                    required=True, 
+                    nargs="+", 
+                    help="List of tracked objects")
+parser.add_argument("-c", "--conf", 
+                    type=float,
+                    required=False, 
+                    default=0.3, 
+                    help="Confident threshold (deafult=0.3)" )
+parser.add_argument("-n", "--nms", 
+                    type=float,
+                    required=False, 
+                    default=0.4, 
+                    help="NMS threshold (default=0.4)")
+parser.add_argument("-d", "--mcd",
+                    type=float,
+                    required = False,
+                    default=0.5,
+                    help="Max cosin distance (default=0.5)"
+                    )
+parser.add_argument("-f","--freq",
+                    type=float,
+                    required=False,
+                    default = 1.0,
+                    help="Detection update frequency in second (default=1.0)"
+                    )
+parser.add_argument("-m", "--mode",
+                    type=int,
+                    required=False, 
+                    default=0, 
+                    help=textwrap.dedent('''\
+                    0: Tracking object by class name (default)
+                    1: Tracking object by ID'''))
+
+args = vars(parser.parse_args())
+
+
 import os
 import cv2
 import numpy as np
@@ -10,9 +58,14 @@ from collections import deque
 from YOLOv4 import YOLO
 from datetime import datetime
 import logging
-file_name = os.path.basename(__file__)
+
+# Generate log files
+FILE_NAME = os.path.basename(__file__)
 date_time = datetime.now().strftime("%d_%m_%Y")
-logging.basicConfig(filename="Logs/%s_[%s].log"%(file_name,date_time), filemode="w", level=logging.INFO, format="%(asctime)s %(message)s")
+logging.basicConfig(filename="Logs/%s_[%s].log"%(FILE_NAME,date_time),
+                    filemode="w", 
+                    level=logging.INFO, 
+                    format="%(asctime)s %(message)s")
 
 
 
@@ -49,7 +102,7 @@ if __name__=="__main__":
 
     while ret:    
         ret, frame = cap.read()
-        boxes, class_names = yolo.detect_image(frame)
+        boxes, class_names = yolo.detect_image(frame,)
 
         features = encoder(frame,boxes)
         logging.info("Features: %s"%features)
