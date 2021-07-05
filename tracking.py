@@ -53,7 +53,7 @@ if __name__=="__main__":
     while ret:    
         try:
             ret, frame = cap.read()
-            drawed_frame = frame.copy()
+            drawed_frame = frame.copy() 
             boxes, class_names = yolo.detect_image(frame)
 
             features = encoder(frame,boxes)

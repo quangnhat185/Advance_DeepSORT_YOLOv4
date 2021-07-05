@@ -16,7 +16,7 @@
 - Try to understand the hyperparmeter: confident threshold, nsm, max cosindistance, mode
 
 
-```json
+```consolec
 usage: use "python tracking.py --help" for more information
 
 optional arguments:

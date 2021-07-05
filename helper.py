@@ -49,7 +49,7 @@ def argparse_init():
                         default=0, 
                         help=textwrap.dedent('''\
                         0: Tracking object by class name (default)
-                        1: Tracking object by ID number'''))
+                        1: Tracking with drag box'''))
     parser.add_argument("-cl", "--colors",
                         required=False,
                         default=[],
