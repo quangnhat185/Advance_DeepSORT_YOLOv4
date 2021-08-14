@@ -67,8 +67,6 @@ def argparse_init():
     return args
 
 class Helper():
-    """[summary]
-    """
     def __init__(self, objects, colors=[]):
         self.COLORS = ['navy', 'blue', 'aqua', 'teal', 'olive', 'green', 'lime', 'yellow', 'orange', 'red', 'maroon', 'fuchsia', 'purple']
         self.objects = objects

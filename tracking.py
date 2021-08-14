@@ -1,6 +1,8 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 from helper import Helper, argparse_init
 args = argparse_init()
-import os
+from deep_sort import nn_matching
 import cv2
 import numpy as np
 import traceback
@@ -14,7 +16,7 @@ from Yolov4 import Yolo
 import logging
 
 
-# Generate log files
+# Create log history
 FILE_NAME = os.path.basename(__file__).split('.')[0]
 logging.basicConfig(filename="Logs/%s.log"%(FILE_NAME),
                     filemode="w", 
@@ -22,14 +24,11 @@ logging.basicConfig(filename="Logs/%s.log"%(FILE_NAME),
                     format="%(asctime)s %(message)s")
 
 
-
-# ???
-# counter = []
+# Create a queue to store bounding box center
 pts = [deque(maxlen=30) for _ in range(9999)]
 
 # Initilaize feature encoder for DeepSort
 encoder_path = os.path.join("encoder","mars-small128.pb")
-assert os.path.isfile(encoder_path), "Could not find %s"%encoder_path
 encoder = gdet.create_box_encoder(encoder_path,batch_size=1)
 
 # Tracking parameters
@@ -61,7 +60,6 @@ if __name__=="__main__":
                     detecting_objs=args["objects"])
         helper = Helper(objects=yolo.detecting_objs, colors=args["colors"])        
 
-    count = 0
     while ret:    
         try:
             ret, frame = cap.read()
@@ -73,7 +71,6 @@ if __name__=="__main__":
                 # features = encoder(frame,boxes)
                 # logging.info("features yolov4: %s"%features)
                 # logging.info("Features: %s"%features)
-
 
             features = encoder(frame, boxes)
             # Score to 1.0 here
@@ -88,19 +85,19 @@ if __name__=="__main__":
             c = []
             boxes=[]
 
-
             for class_name, det in zip(class_names, detections):
                 bbox = det.to_tlbr()
+
+                # plot bounding box with bounding_box package
                 helper.drawing_bbox(drawed_frame, bbox, class_name)
+
+                # plot bounding box with OpenCV
                 # cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,255,255), 2)
             
             for index, track in enumerate(tracker.tracks):
                 if not track.is_confirmed() or track.time_since_update > args["freq"] or index >= len(class_names):
                     continue
                 
-
-                # indexIDs.append(int(track.track_id))
-                # counter.append(int(track.track_id))
                 bbox = track.to_tlbr()
                 boxes.append(bbox)
                 # logging.info("boxes.append(bbox) %s"%boxes)
@@ -127,7 +124,6 @@ if __name__=="__main__":
                     thickness = int(np.sqrt(64/float(j+1))*2)
                     cv2.line(drawed_frame,(pts[track.track_id][j-1]), (pts[track.track_id][j]),(0,0,255),thickness)
                 
-            # count = len(set(counter))  
             # cv2.putText(drawed_frame, "Total Object Counter: "+str(count),(int(20), int(120)),0, 5e-3 * 200, (0,255,0),2)
             # cv2.putText(drawed_frame, "Current Object Counter: "+str(i),(int(20), int(80)),0, 5e-3 * 200, (0,255,0),2)
             cv2.imshow('Deep_SORT', drawed_frame)
@@ -136,8 +132,7 @@ if __name__=="__main__":
             key=cv2.waitKey(1) & 0xff
             if key==27:
                 break
-        # except IndexError:
-        #     pass
+
         except Exception as e:
             print(traceback.format_exc())
 

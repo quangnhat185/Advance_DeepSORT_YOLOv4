@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import os
 from helper import Helper
-import logging
+
 YOLOV4_FOLDER = "yolov4"
 LABELS_PATH = os.path.join(YOLOV4_FOLDER,"coco.names")
 WEIGHT_PATH = os.path.join(YOLOV4_FOLDER, "yolov4.weights")
@@ -16,12 +16,6 @@ class Yolo(object):
         self.label_path = LABELS_PATH
         self.labels = None
         self.detecting_objs = detecting_objs
-
-
-        # Unit tests
-        assert os.path.isfile(self.label_path), "Could not find %s"%self.label_path
-        assert os.path.isfile(self.config_path), "Could not find %s"%self.config_path
-        assert os.path.isfile(self.weight_path), "Could not find %s"%self.weight_path
 
         # Load coco labels
         with open(LABELS_PATH) as file:
@@ -40,19 +34,43 @@ class Yolo(object):
         
         self.model = cv2.dnn_DetectionModel(net)
         self.model.setInputParams(size=(416,416), scale=1/255, swapRB=True)
-        print("[INFO] Created YoloV4 model successfully")
+        print("[INFO] YoloV4 is successfully initialized!")
 
     def to_tlbr(self, bbox):
-        """Convert bounding box to format `(min x, min y, max x, max y)`, i.e.,
-        `(top left, bottom right)`.
+        """Convert bounding box coordinate format to `[top left, bottom right]` format
+
+        Parameters
+        ----------
+        bbox : ndarray
+            bounding box in default yolov4 format
+
+        Returns
+        -------
+        ret : ndarray
+            bounding box in `[top left, bottom right]` format
         """
+        
         tlwh = np.asarray(bbox, dtype=np.float)
         ret = tlwh.copy()
         ret[2:] += ret[:2]
         return ret
 
     def detect_image(self, image):
+        """Return object's bounding box and its class name
 
+        Parameters
+        ----------
+        image : ndarray
+            Representation of an image in `ndarray` format
+
+        Returns
+        -------
+        return_boxes : List of array
+            List of bounding box coordinates
+
+        return_class_names : List of string
+            List of object's class name
+        """
         classes, scores, boxes = self.model.detect(image, self.conf_threshold, self.nms_thesh)
 
         return_boxes = []
@@ -81,9 +99,10 @@ if __name__=="__main__":
         for class_name, bbox in zip(class_names, boxes):
             bbox = yolo.to_tlbr(bbox)
             helper.drawing_bbox(drawed_frame, bbox, class_name)
-        
+
         cv2.imshow("predicted", drawed_frame)
         
+        np.linspace
         key=cv2.waitKey(1) & 0xff
         if key==27:
             break
