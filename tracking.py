@@ -24,7 +24,7 @@ logging.basicConfig(filename="Logs/%s.log"%(FILE_NAME),
 
 
 # ???
-counter = []
+# counter = []
 pts = [deque(maxlen=30) for _ in range(9999)]
 
 # Initilaize feature encoder for DeepSort
@@ -37,11 +37,6 @@ metric = nn_matching.NearestNeighborDistanceMetric("cosine", args["mcd"], None)
 tracker = Tracker(metric)
 
 if __name__=="__main__":
-    # Initialize yolo
-    yolo = Yolo(conf_thresh=args["conf"], 
-                nms_thresh=args["nms"], 
-                detecting_objs=args["objects"])
-    helper = Helper(objects=yolo.detecting_objs, colors=args["colors"])
 
     video_path = args["video"]
     assert os.path.isfile(video_path), "Could not find %s"%video_path
@@ -50,45 +45,71 @@ if __name__=="__main__":
     
     ret, frame = cap.read()
 
+    if args["mode"]:
+        helper = Helper(objects=args["objects"], colors=args["colors"])        
+        roi = cv2.selectROI(frame,fromCenter=False, showCrosshair=False)
+        bbox = [int(x) for x in roi]
+        logging.info("box manually: %s"%bbox)
+
+        class_names = args["objects"]
+        boxes = [bbox]
+
+    else:
+    # Initialize yolo
+        yolo = Yolo(conf_thresh=args["conf"], 
+                    nms_thresh=args["nms"], 
+                    detecting_objs=args["objects"])
+        helper = Helper(objects=yolo.detecting_objs, colors=args["colors"])        
+
+    count = 0
     while ret:    
         try:
             ret, frame = cap.read()
-            drawed_frame = frame.copy() 
-            boxes, class_names = yolo.detect_image(frame)
+            drawed_frame = frame.copy()
+            
+            if not args["mode"]:
+                boxes, class_names = yolo.detect_image(frame)
+                logging.info("boxes by yolo: %s"%boxes[0])
+                # features = encoder(frame,boxes)
+                # logging.info("features yolov4: %s"%features)
+                # logging.info("Features: %s"%features)
 
-            features = encoder(frame,boxes)
-            # logging.info("Features: %s"%features)
 
+            features = encoder(frame, boxes)
             # Score to 1.0 here
             detections = [Detection(bbox, 1.0, feature) for bbox, feature in zip(boxes, features)]
+
 
         ## Call the tracker
             tracker.predict()
             tracker.update(detections)
             
-            i = int(0)
-            indexIDs = []
+            # indexIDs = []
             c = []
-            
+            boxes=[]
+
+
             for class_name, det in zip(class_names, detections):
                 bbox = det.to_tlbr()
                 helper.drawing_bbox(drawed_frame, bbox, class_name)
                 # cv2.rectangle(frame,(int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])),(255,255,255), 2)
-                
+            
             for index, track in enumerate(tracker.tracks):
                 if not track.is_confirmed() or track.time_since_update > args["freq"] or index >= len(class_names):
                     continue
-
-                indexIDs.append(int(track.track_id))
-                counter.append(int(track.track_id))
-                bbox = track.to_tlbr()
                 
+
+                # indexIDs.append(int(track.track_id))
+                # counter.append(int(track.track_id))
+                bbox = track.to_tlbr()
+                boxes.append(bbox)
+                # logging.info("boxes.append(bbox) %s"%boxes)
+
                 helper.drawing_bbox(drawed_frame, 
                                     bbox, 
                                     class_name=class_names[index], 
                                     text_id="id: %s"%track.track_id)
                 
-                i+=1
                 # bbox_center_point(x,y)
                 center = (int(((bbox[0])+(bbox[2]))/2),int(((bbox[1])+(bbox[3]))/2))
                 

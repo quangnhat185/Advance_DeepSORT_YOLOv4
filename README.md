@@ -1,5 +1,17 @@
 ## Tracking objects with Deepsort and YoloV4
 
+Okay the tracking by ROI does not work. It seems like I need object detectors that provide prediction prediodically. And the counting number of person idea is too trivial, so it is better to try a more unique idea. 
+
+Here is the new approach. It will be a project that track a certain object, plotting its total travelling distance overtime (normal plot), mesuring current speed (bar chart), and crop the object to a side window. 
+
+**Features needed:**
+  - Return a list of objects, the user select the object he/she wants to track by mouse (use ROI to create a contour around desired object)
+  - Plotting travelling distance over time as side window (normal plot)
+  - Plotting average speed over time as side window (bar chart, it should plott different color for acclerating, medium speed, and walking)
+  - Plotting the total amount of acclerating, walking, and medium speed
+  - Cropping the object and move it to a side window
+
+**Example:** Tracking CR7 from a football math footage
 
 ### TO-DO-LIST
 - [ ] [tracking.py](./tracking.py): There should be two modes: tracking all pre-indicate objects or tracking an object following its id
@@ -38,4 +50,5 @@ optional arguments:
 
 ```bash
 python tracking.py -v test_videos/test_video_01.mp4 -o car
+python tracking.py -v test_videos/test_video_01.mp4 -m 1 -o object
 ```

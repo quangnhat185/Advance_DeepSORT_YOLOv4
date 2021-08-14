@@ -63,13 +63,12 @@ class Yolo(object):
             if class_name in self.detecting_objs and box[2]<500:
                 return_boxes.append(box)
                 return_class_names.append(class_name)
-                logging.info("box[2]: %s"%box[2])
         
         return return_boxes, return_class_names
 
 
 if __name__=="__main__":
-    yolo = Yolo(detecting_objs=["car","truck"])
+    yolo = Yolo(conf_thresh=0.3, nms_thresh=0.4,detecting_objs=["car","truck"])
     helper = Helper(objects=yolo.detecting_objs, colors=["green", "blue"])
     cap = cv2.VideoCapture("test_videos/test_video_01.mp4")
     ret, frame = cap.read()

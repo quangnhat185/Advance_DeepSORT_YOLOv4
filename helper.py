@@ -20,6 +20,7 @@ def argparse_init():
     parser.add_argument("-o","--objects", 
                         required=True, 
                         nargs="+", 
+                        default=[],
                         help="List of tracked objects")
     parser.add_argument("-c", "--conf", 
                         type=float,
@@ -66,6 +67,8 @@ def argparse_init():
     return args
 
 class Helper():
+    """[summary]
+    """
     def __init__(self, objects, colors=[]):
         self.COLORS = ['navy', 'blue', 'aqua', 'teal', 'olive', 'green', 'lime', 'yellow', 'orange', 'red', 'maroon', 'fuchsia', 'purple']
         self.objects = objects
@@ -88,6 +91,21 @@ class Helper():
 
 
     def drawing_bbox(self, drawed_frame, bbox, class_name=None, text_id=None, draw_with_opencv=False):
+        """[summary]
+
+        Parameters
+        ----------
+        drawed_frame : [type]
+            [description]
+        bbox : [type]
+            [description]
+        class_name : [type], optional
+            [description], by default None
+        text_id : [type], optional
+            [description], by default None
+        draw_with_opencv : bool, optional
+            [description], by default False
+        """
         
         if not draw_with_opencv:
             (x_1,y_1) = (bbox[0],bbox[1])
