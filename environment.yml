@@ -1,17 +1,11 @@
-name: tracking_deeport
+name: deepsort_track
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - certifi=2020.12.5=py36ha15d459_1
   - pip=21.1.1=pyhd8ed1ab_0
-  - python=3.6.13=h39d44d4_0_cpython
-  - python_abi=3.6=1_cp36m
-  - setuptools=49.6.0=py36ha15d459_3
-  - vc=14.2=hb210afc_4
-  - vs2015_runtime=14.28.29325=h5e1d092_4
+  - python=3.6.13
   - wheel=0.36.2=pyhd3deb0d_0
-  - wincertstore=0.2=py36ha15d459_1006
   - pip:
     - absl-py==0.12.0
     - astor==0.8.1
@@ -27,7 +21,6 @@ dependencies:
     - keras==2.2.5
     - keras-applications==1.0.8
     - keras-preprocessing==1.1.2
-    - markdown==3.3.4
     - numpy==1.19.5
     - opencv-python==4.5.2.52
     - opt-einsum==3.3.0
@@ -47,4 +40,3 @@ dependencies:
     - wget==3.2
     - wrapt==1.12.1
     - zipp==3.4.1
-prefix: D:\MiniAnaconda\envs\tensorflow

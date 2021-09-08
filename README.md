@@ -17,9 +17,16 @@ Here is the new approach. It will be a project that track a certain object, plot
   - [ ] Filter tracking object with ROI contour
   - [ ] Crop the object box and append it to side
   - [ ] Save object central coordinate
+  - [ ] Update yolov4 weight download with following link: https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights
+  - Use assert to check weights rather than pytest
 
 
-```consolec
+### Set up environment
+```bash
+```
+
+### Run from terminal
+```
 usage: use "python tracking.py --help" for more information
 
 optional arguments:
