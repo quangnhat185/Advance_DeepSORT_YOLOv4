@@ -23,6 +23,8 @@ Here is the new approach. It will be a project that track a certain object, plot
 
 ### Set up environment
 ```bash
+$ conda env create -f environment.yml
+$ conda activate deepsort_track
 ```
 
 ### Run from terminal
