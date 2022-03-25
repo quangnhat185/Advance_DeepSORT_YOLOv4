@@ -175,18 +175,23 @@ class Helper:
         cv2.destroyWindow("ROI selector")
         return roi
 
-
     def tracking_id_from_roi(self, roi, bbox_centers) -> int:
         """Extract tracking id from roi and list of bbox centroids
 
-        Args:
-            roi (np.array): coordinate of roi
-            bbox_centers (np.array) : list of bbox centrodis
+        Parameters
+        ----------
+        roi : ndarray
+            coordinate of roi
+        bbox_centers : ndarray
+            list of bbox centroids
 
-        Returns:
-            int: tracking id
+        Returns
+        -------
+        int
+            tracking id
         """
         roi_center = np.array([
+            
             int((roi[0]) + (roi[2]/ 2)),
             int((roi[1]) + (roi[3] / 2)),
             ]
@@ -198,14 +203,21 @@ class Helper:
     def crop_tracked_frame(self, bbox, frame, offset=10, output_width=320):
         """Crop tracked object in frame
 
-        Args:
-            bbox: bbox coordinate in tlbr format
-            frame: extracting frame 
-            offset (int) : Crop offest. Defaults to 10.
-            output_width (int): Crop width. Defaults to 320.
+        Parameters
+        ----------
+        bbox : ndarray
+            bbox coordinate in tlbr format
+        frame : ndarray
+            origin frame 
+        offset : int, optional
+            Crop offest. Defaults to 10.
+        output_width : int, optional
+            Crop width. Defaults to 320.
 
-        Returns:
-            ndarary: Cropped frame
+        Returns
+        -------
+        ndarray
+            Cropped frame with object
         """
         x1 = int(bbox[0]) - offset
         y1 = int(bbox[1]) - offset
