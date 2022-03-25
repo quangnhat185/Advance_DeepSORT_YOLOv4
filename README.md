@@ -14,17 +14,17 @@ Here is the new approach. It will be a project that track a certain object, plot
 **Example:** Tracking CR7 from a football math footage
 
 ### TO-DO-LIST
-  - [ ] Filter tracking object with ROI contour
-  - [ ] Crop the object box and append it to side
+  - [x] Filter tracking object with ROI contour
+  - [x] Crop the object box and append it to side
   - [ ] Save object central coordinate
-  - [ ] Update yolov4 weight download with following link: https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights
-  - Use assert to check weights rather than pytest
+  - [x] Update yolov4 weight download with following link: https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights
+  - Unitest with pytest
 
 
 ### Set up environment
 ```bash
 $ conda env create -f environment.yml
-$ conda activate deepsort_track
+$ conda activate deepsort_track 
 ```
 
 ### Run from terminal

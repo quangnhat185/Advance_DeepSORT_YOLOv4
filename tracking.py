@@ -14,6 +14,8 @@ from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 from collections import deque
 from Yolov4 import Yolo
+import time
+import pickle
 import logging
 
 
@@ -25,7 +27,6 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(message)s",
 )
-
 
 # Create a queue to store bounding box center
 pts = [deque(maxlen=30) for _ in range(9999)]
@@ -45,19 +46,10 @@ if __name__ == "__main__":
 
     cap = cv2.VideoCapture(video_path)
 
+    height = int(cap.get(4))
+    width = int(cap.get(3))
     ret, frame = cap.read()
 
-    # if args["mode"]:
-    #     helper = Helper(objects=args["objects"], colors=args["colors"])
-    #     roi = cv2.selectROI(frame, fromCenter=False, showCrosshair=False)
-    #     bbox = [int(x) for x in roi]
-    #     logging.info("box manually: %s" % bbox)
-
-    #     class_names = args["objects"]
-    #     boxes = [bbox]
-
-    # else:
-    # Initialize yolo
     yolo = Yolo(
         conf_thresh=args["conf"],
         nms_thresh=args["nms"],
@@ -66,129 +58,127 @@ if __name__ == "__main__":
     helper = Helper(objects=yolo.detecting_objs, colors=args["colors"])
 
     roi_select_status = False
-    show_prediction_status = False
+
+    object_pts = dict()
 
     while ret:
         try:
             ret, frame = cap.read()
+
             drawed_frame = frame.copy()
 
+            # Obtain detected bounding boxes with yolo
             boxes, class_names = yolo.detect_image(frame)
             logging.info("boxes by yolo: %s" % boxes[0])
             # features = encoder(frame,boxes)
             # logging.info("features yolov4: %s"%features)
             # logging.info("Features: %s"%features)
-    
+
+            # extract features from detected boxes
             features = encoder(frame, boxes)
-            # Score to 1.0 here
+
+            # Combine bounding boxes and corresponding feature into an instance
+            # of Detection class
             detections = [
                 Detection(bbox, 1.0, feature) for bbox, feature in zip(boxes, features)     
             ]
+                                
+            logging.info("boxes, features: {} ----- {}".format(boxes, features))
 
             ## Call the tracker
             tracker.predict()
             tracker.update(detections)
+            tracker.tracks
 
-            # indexIDs = []
-            c = []
-            boxes = []
+            # Select tracking object with ROI
+            key = cv2.waitKey(1) & 0xFF
 
-            for class_name, det in zip(class_names, detections):
-                bbox = det.to_tlbr()
-                # plot bounding box
-                helper.drawing_bbox(drawed_frame, bbox, class_name)
+            if not roi_select_status:
+                for class_name, det in zip(class_names, detections):
+                    bbox = det.to_tlbr()
+                    cv2.putText(
+                        drawed_frame,
+                        "Press c to select track object",
+                        (int(width/2)-100, height-100),
+                        0,
+                        5e-3 * 200,
+                        (0,0,255),
+                        2,
+                    )                    
 
+                    # plot bounding box
+                    helper.drawing_bbox(drawed_frame, bbox, class_name)
 
-            if not roi_select_status and show_prediction_status and detections is not None:
-                roi = helper.extract_roi(frame)
-                roi_select_status = True
-                logging.info("ROI: {}".format(roi))
-                
-                # plot bounding box with OpenCV
-                # cv2.rectangle(
-                #     frame,
-                #     (int(bbox[0]), int(bbox[1])),
-                #     (int(bbox[2]), int(bbox[3])),
-                #     (255, 255, 255),
-                #     2,
-                # )
+                if key==ord("c"):
+                    roi = helper.extract_roi(drawed_frame)
+                    roi_select_status = True
+                    logging.info("ROI: {}".format(roi))
+                    
+                    # extract centroids of all detected bounding boxes
+                    bbox_centers = []
+                    track_ids = []
+                    for index, track in enumerate(tracker.tracks):
+                        bbox = track.to_tlbr()
+                        center = (
+                            int(((bbox[0]) + (bbox[2])) / 2),
+                            int(((bbox[1]) + (bbox[3])) / 2),
+                        )
+                        bbox_centers.append(center)
+                    bbox_centers = np.array(bbox_centers)
 
-            for index, track in enumerate(tracker.tracks):
-                if (
-                    not track.is_confirmed()
-                    or track.time_since_update > args["freq"]
-                    or index >= len(class_names)
-                ):
-                    continue
+                    # return track id based on roi and bbox centroids
+                    track_id = helper.tracking_id_from_roi(roi, bbox_centers)
+                    logging.info(f"bbox_centers: {bbox_centers}")
+                    logging.info("track.track_id: {}".format(track.track_id))
 
-                bbox = track.to_tlbr()
-                boxes.append(bbox)
-                # logging.info("boxes.append(bbox) %s"%boxes)
-
-                helper.drawing_bbox(
-                    drawed_frame,
-                    bbox,
-                    class_name=class_names[index],
-                    text_id="id: %s" % track.track_id,
-                )
-
-                # bbox_center_point(x,y)
-                center = (
-                    int(((bbox[0]) + (bbox[2])) / 2),
-                    int(((bbox[1]) + (bbox[3])) / 2),
-                )
-
-                # track_id[center]
-                pts[track.track_id].append(center)
-                thickness = 5
-
-                # center point
-                cv2.circle(drawed_frame, (center), 1, (0, 0, 255), thickness)
-
-                # draw motion path
-                for j in range(1, len(pts[track.track_id])):
+            elif roi_select_status:
+                for index, track in enumerate(tracker.tracks):
                     if (
-                        pts[track.track_id][j - 1] is None
-                        or pts[track.track_id][j] is None
+                        not track.is_confirmed()
+                        or track.track_id != track_id
+                        or track.time_since_update > args["freq"]
+                        or index >= len(class_names)
                     ):
                         continue
-                    thickness = int(np.sqrt(64 / float(j + 1)) * 2)
-                    cv2.line(
+                    
+                    bbox = track.to_tlbr()
+
+                    # crop tracked object based on boundingbox
+                    tracked_frame = helper.crop_tracked_frame(bbox, frame, offset=20)
+                    cv2.imshow("Crop image", tracked_frame)
+                    
+
+                    logging.info("track.trackid: {}".format(track.track_id))
+                    helper.drawing_bbox(
                         drawed_frame,
-                        (pts[track.track_id][j - 1]),
-                        (pts[track.track_id][j]),
-                        (0, 0, 255),
-                        thickness,
+                        bbox,
+                        class_name=class_names[index],
+                        text_id="id: %s" % track.track_id,
                     )
 
+                    # bbox_center_point(x,y)
+                    center = (
+                        int(((bbox[0]) + (bbox[2])) / 2),
+                        int(((bbox[1]) + (bbox[3])) / 2),
+                    )
 
-            # cv2.putText(
-            #     drawed_frame,
-            #     "Total Object Counter: " + str(count),
-            #     (int(20), int(120)),
-            #     0,
-            #     5e-3 * 200,
-            #     (0, 255, 0),
-            #     2,
-            # )
-            # cv2.putText(
-            #     drawed_frame,
-            #     "Current Object Counter: " + str(i),
-            #     (int(20), int(80)),
-            #     0,
-            #     5e-3 * 200,
-            #     (0, 255, 0),
-            #     2,
-            # )
+                    object_pts[center] = time.time()
+                    logging.info("object_pts: {}".format(str(object_pts)))
 
-            cv2.imshow("Deep_SORT", drawed_frame)
-            show_prediction_status = True
+                    # center point
+                    thickness = 5
+                    cv2.circle(drawed_frame, (center), 1, (0, 0, 255), thickness)
 
-            key = cv2.waitKey(1) & 0xFF
+            cv2.namedWindow("   ")  
+            cv2.moveWindow("Deep SORT", 0,0)
+            cv2.imshow("Deep SORT", drawed_frame)
             if key == 27:
                 break
 
         except Exception as e:
             print(traceback.format_exc())
+
+    # with open("object_pts", "wb") as f:
+        # pickle.dump(object_pts, f)
 
     cap.release()

@@ -109,9 +109,9 @@ class Helper:
         self.color_dict["NA"] = "black"
 
     def drawing_bbox(
-        self, drawed_frame, bbox, class_name=None, text_id=None, draw_with_opencv=False
+        self, drawed_frame, bbox, class_name="NA", text_id=None, draw_with_opencv=False
     ):
-        """[summary]
+        """Draw bbox on image
 
         Parameters
         ----------
@@ -174,3 +174,47 @@ class Helper:
         roi = cv2.selectROI("ROI selector", frame, fromCenter=False, showCrosshair=False)
         cv2.destroyWindow("ROI selector")
         return roi
+
+
+    def tracking_id_from_roi(self, roi, bbox_centers) -> int:
+        """Extract tracking id from roi and list of bbox centroids
+
+        Args:
+            roi (np.array): coordinate of roi
+            bbox_centers (np.array) : list of bbox centrodis
+
+        Returns:
+            int: tracking id
+        """
+        roi_center = np.array([
+            int((roi[0]) + (roi[2]/ 2)),
+            int((roi[1]) + (roi[3] / 2)),
+            ]
+        )
+        track_id = np.argmin(np.linalg.norm(np.ones((len(bbox_centers),2))*roi_center-bbox_centers, axis=1)) + 1
+
+        return track_id
+
+    def crop_tracked_frame(self, bbox, frame, offset=10, output_width=320):
+        """Crop tracked object in frame
+
+        Args:
+            bbox: bbox coordinate in tlbr format
+            frame: extracting frame 
+            offset (int) : Crop offest. Defaults to 10.
+            output_width (int): Crop width. Defaults to 320.
+
+        Returns:
+            ndarary: Cropped frame
+        """
+        x1 = int(bbox[0]) - offset
+        y1 = int(bbox[1]) - offset
+        x2 = int(bbox[2]) + offset
+        y2 = int(bbox[3]) + offset
+        ratio = frame.shape[0] / frame.shape[1]
+        tracking_frame = frame[y1:y2, x1:x2]        
+        tracking_frame = cv2.resize(tracking_frame, (int(output_width * ratio), output_width))
+        return tracking_frame
+
+
+
