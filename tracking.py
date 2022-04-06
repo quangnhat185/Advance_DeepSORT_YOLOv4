@@ -14,9 +14,13 @@ from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 from collections import deque
 from Yolov4 import Yolo
+from data_plotting import DataPlot
+import matplotlib.pyplot as plt
+
 import time
 import pickle
 import logging
+
 
 
 # Create log history
@@ -61,11 +65,16 @@ if __name__ == "__main__":
 
     object_pts = dict()
 
+    plotter = DataPlot()
+
+    blank = np.zeros((height, width, 3))
+
     while ret:
         try:
             ret, frame = cap.read()
 
             drawed_frame = frame.copy()
+            drawed_blank = blank.copy()
 
             # Obtain detected bounding boxes with yolo
             boxes, class_names = yolo.detect_image(frame)
@@ -119,10 +128,7 @@ if __name__ == "__main__":
                     track_ids = []
                     for index, track in enumerate(tracker.tracks):
                         bbox = track.to_tlbr()
-                        center = (
-                            int(((bbox[0]) + (bbox[2])) / 2),
-                            int(((bbox[1]) + (bbox[3])) / 2),
-                        )
+                        center = helper.bbox_center(bbox, is_tlbr=True)
                         bbox_centers.append(center)
                     bbox_centers = np.array(bbox_centers)
 
@@ -133,12 +139,14 @@ if __name__ == "__main__":
 
             elif roi_select_status:
                 for index, track in enumerate(tracker.tracks):
+                    track_log = f"track.is_confirmed: {track.is_confirmed()} \n" + f"track.track_id != track_id: {track.track_id != track_id}"
+                    logging.info(track_log)
+                    
                     if (
                         not track.is_confirmed()
                         or track.track_id != track_id
                         or track.time_since_update > args["freq"]
-                        or index >= len(class_names)
-                    ):
+                    ):  
                         continue
                     
                     bbox = track.to_tlbr()
@@ -156,29 +164,29 @@ if __name__ == "__main__":
                         text_id="id: %s" % track.track_id,
                     )
 
-                    # bbox_center_point(x,y)
-                    center = (
-                        int(((bbox[0]) + (bbox[2])) / 2),
-                        int(((bbox[1]) + (bbox[3])) / 2),
-                    )
-
+                    center = helper.bbox_center(bbox, is_tlbr=True)
                     object_pts[center] = time.time()
                     logging.info("object_pts: {}".format(str(object_pts)))
+
+                    if len(object_pts)>1:
+                        plotter.plot(object_pts)
 
                     # center point
                     thickness = 5
                     cv2.circle(drawed_frame, (center), 1, (0, 0, 255), thickness)
+                    cv2.circle(drawed_blank, (center), 10, (0,0,255), -1)
 
             cv2.namedWindow("   ")  
             cv2.moveWindow("Deep SORT", 0,0)
             cv2.imshow("Deep SORT", drawed_frame)
+            cv2.imshow("Background view", drawed_blank)
             if key == 27:
                 break
 
         except Exception as e:
             print(traceback.format_exc())
 
-    # with open("object_pts", "wb") as f:
-        # pickle.dump(object_pts, f)
+    with open("object_pts", "wb") as f:
+        pickle.dump(object_pts, f)
 
     cap.release()

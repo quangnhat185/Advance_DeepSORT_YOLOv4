@@ -228,5 +228,32 @@ class Helper:
         tracking_frame = cv2.resize(tracking_frame, (int(output_width * ratio), output_width))
         return tracking_frame
 
+    def bbox_center(self, bbox, is_tlbr):
+        """return center coordinates with bounding box
+
+        Parameters
+        ----------
+        bbox : list[int]
+            Bounding box coordinate
+        is_tlbr : bool
+            TLBR format or not
+
+        Returns
+        -------
+        list[int]
+            center point of bounding box
+        """
+        if is_tlbr:
+            center = (
+                int(((bbox[0]) + (bbox[2])) / 2),
+                int(((bbox[1]) + (bbox[3])) / 2),
+            )
+        else:
+            center = (
+                int((bbox[0]) + (bbox[2] / 2)),
+                int((bbox[1]) + (bbox[3] / 2)),                
+            )
+        return center
+
 
 

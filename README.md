@@ -8,7 +8,6 @@ Here is the new approach. It will be a project that track a certain object, plot
   - The user select object to track using ROI
   - Plotting travelling distance over time as side window (normal plot)
   - Plotting average speed over time as side window (bar chart, it should plott different color for acclerating, medium speed, and walking)
-  - Plotting the total amount of acclerating, walking, and medium speed
   - Cropping the object and move it to a side window
 
 **Example:** Tracking CR7 from a football math footage
@@ -16,9 +15,14 @@ Here is the new approach. It will be a project that track a certain object, plot
 ### TO-DO-LIST
   - [x] Filter tracking object with ROI contour
   - [x] Crop the object box and append it to side
-  - [ ] Save object central coordinate
+  - [x] Save object central coordinate
   - [x] Update yolov4 weight download with following link: https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights
-  - Unitest with pytest
+  - [x] Unitest with pytest
+  - [ ] Write total distance and velocity in background view
+  - [ ] Create marker following tracking point (liner, different color)
+  - [ ] Update environment
+  - [ ] Documentation
+  
 
 
 ### Set up environment
