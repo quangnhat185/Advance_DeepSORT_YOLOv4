@@ -10,7 +10,7 @@ Here is the new approach. It will be a project that track a certain object, plot
   - Plotting average speed over time as side window (bar chart, it should plott different color for acclerating, medium speed, and walking)
   - Cropping the object and move it to a side window
 
-**Example:** Tracking CR7 from a football math footage
+**Example:** Tracking Son from a football math footage
 
 ### TO-DO-LIST
   - [x] Filter tracking object with ROI contour
@@ -18,8 +18,8 @@ Here is the new approach. It will be a project that track a certain object, plot
   - [x] Save object central coordinate
   - [x] Update yolov4 weight download with following link: https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights
   - [x] Unitest with pytest
-  - [ ] Write total distance and velocity in background view
-  - [ ] Create marker following tracking point (liner, different color)
+  - [x] Create marker following tracking point (liner, different color)
+  - [x] Apply it to Son tracking
   - [ ] Update environment
   - [ ] Documentation
   
@@ -51,5 +51,5 @@ optional arguments:
 ```
 
 ```bash
-python tracking.py -v test_videos/test_video_01.mp4 -o car
+python tracking.py -v test_videos/football.mp4 -t person
 ```

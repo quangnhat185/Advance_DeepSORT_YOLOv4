@@ -7,3 +7,5 @@ deep_sort/.svn
 tools/.svn 
 *.pyc 
 push_git.sh
+Ignore
+.vscode

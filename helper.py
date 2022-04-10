@@ -17,12 +17,12 @@ def argparse_init():
         "-v", "--video", type=str, required=True, help="Path to video file"
     )
     parser.add_argument(
-        "-o",
-        "--objects",
+        "-t",
+        "--target",
         required=True,
         nargs="+",
         default=[],
-        help="List of tracked objects",
+        help="Type of tracking target (person, car, etc)",
     )
     parser.add_argument(
         "-c",
@@ -58,10 +58,18 @@ def argparse_init():
     )
 
     parser.add_argument(
-        "-cl", "--colors", required=False, default=[], nargs="+", help="List of colors"
+        "-cl", "--colors", 
+        required=False, 
+        default=[], 
+        nargs="+", 
+        help="List of colors"
     )
+
     parser.add_argument(
-        "-s", "--save", type=bool, default=False, help="Save output video (True/False)"
+        "-s", "--save", 
+        type=bool, 
+        default=False, 
+        help="Save output video (True/False)"
     )
 
     args = vars(parser.parse_args())
