@@ -1,5 +1,8 @@
 ## Tracking objects with Deepsort and YoloV4
-
+<p align="center">
+<img src="https://db3pap007files.storage.live.com/y4mpG_uuca4JDKL6ZW2huwOfcXSScXXC-wS_tUgBzKT0bdeNFRHyZfRc-at7tIRJeAsJgGaP8DERHma127ZBO_J7fS0Cz5YaMaddyS31UAaPcDP2kBJPkIfnsdvhTs_Vaa3iqMLeVhIXSkmY8Ks_fRCcL0FL8sMpbgIbt06gBNGC0OqtRj4Qsv6SoV1jkrSLnXv?width=1280&height=720&cropmode=none" width="1280" height="720" />
+</p>
+                                                                                          
 Okay the tracking by ROI does not work. It seems like I need object detectors that provide prediction prediodically. And the counting number of person idea is too trivial, so it is better to try a more unique idea. 
 
 Here is the new approach. It will be a project that track a certain object, plotting its total travelling distance overtime (normal plot), mesuring current speed (bar chart), and crop the object to a side window. 
