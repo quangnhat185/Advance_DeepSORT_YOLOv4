@@ -1,3 +1,4 @@
+import os
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,8 +11,8 @@ class DataPlot():
         self.fig, (self.ax1, self.ax2) = plt.subplots(ncols=2, nrows=1)
         self.figsize = figsize
         self.dpi = dpi
-        self.time_step = np.empty([0])
-        self.dis = np.empty([0])
+        self.time_step = np.empty([2])
+        self.dis = np.empty([2])
         self.velocity = None
         self.max_vel = max_velocity
         self.save = save
@@ -32,6 +33,7 @@ class DataPlot():
         self.dis = np.append(self.dis, new_sum_dis)
         self.time_step = np.append(self.time_step, new_sum_time[-1])
         dis_text = str(int(self.dis[-1])) + "px"
+
 
         self.velocity = (self.dis[-1] - self.dis[-2])/(self.time_step[-1] - self.time_step[-2])
         vel_text = str(int(self.velocity)) + "px/s"

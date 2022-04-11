@@ -60,7 +60,7 @@ def argparse_init():
     parser.add_argument(
         "-cl", "--colors", 
         required=False, 
-        default=[], 
+        default=["yellow"], 
         nargs="+", 
         help="List of colors"
     )

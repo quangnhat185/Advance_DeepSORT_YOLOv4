@@ -1,5 +1,5 @@
 import os
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -64,14 +64,14 @@ if __name__ == "__main__":
     if args["save"]:
         number_frame = 30
         video_size = (width, height)
-        writer_drawed_frame = cv2.VideoWriter("./output/tracked_video.mp4",cv2.VideoWriter_fourcc(*'MP4V'),
-        number_frame,video_size)
-        writer_drawed_blank = cv2.VideoWriter("./output/path_follower.mp4",cv2.VideoWriter_fourcc(*'MP4V'),
-        number_frame,video_size)
-        writer_drawed_cropped = cv2.VideoWriter("./output/cropped_frame.mp4",cv2.VideoWriter_fourcc(*'MP4V'),
-        number_frame,CROP_FRAME_SIZE)
-        writer_drawed_plot = cv2.VideoWriter("./output/plotted_frame.mp4",cv2.VideoWriter_fourcc(*'MP4V'),
-        number_frame,PLOT_FRAME_SIZE)
+        
+        writer_drawed_frame = cv2.VideoWriter("./output/tracked_video.mp4",cv2.VideoWriter_fourcc(*'MP4V'), number_frame,video_size)
+
+        writer_drawed_blank = cv2.VideoWriter("./output/path_follower.mp4",cv2.VideoWriter_fourcc(*'MP4V'), number_frame,video_size)
+
+        writer_drawed_cropped = cv2.VideoWriter("./output/cropped_frame.mp4",cv2.VideoWriter_fourcc(*'MP4V'), number_frame,CROP_FRAME_SIZE)
+
+        writer_drawed_plot = cv2.VideoWriter("./output/plotted_frame.mp4",cv2.VideoWriter_fourcc(*'MP4V'), number_frame,PLOT_FRAME_SIZE)
         
     # initialize YoloV4 detector
     yolo = Yolo(
@@ -138,7 +138,8 @@ if __name__ == "__main__":
                 if key==ord("c"):
                     roi = helper.extract_roi(drawed_frame)
                     roi_select_status = True
-                    
+                    print("Tracking in progress...")
+
                     # extract centroids of all detected bounding boxes
                     bbox_centers = []
                     track_ids = []
@@ -170,7 +171,8 @@ if __name__ == "__main__":
                     # print(cropped_frame.shape)
                     cv2.imshow("Crop image", cropped_frame)
                     cropped_frame = cv2.resize(cropped_frame, CROP_FRAME_SIZE)
-                    writer_drawed_cropped.write(cropped_frame)
+
+                    if args["save"]: writer_drawed_cropped.write(cropped_frame)
 
                     # draw bounding box around target
                     helper.drawing_bbox(
@@ -190,7 +192,7 @@ if __name__ == "__main__":
                         plotter.plot(object_pts, pause=0.5)
                         plot_frame = cv2.imread("./output/plot/tracking_plot.png"),
                         plot_frame = cv2.resize(plot_frame[0], (PLOT_FRAME_SIZE))
-                        writer_drawed_plot.write(plot_frame)
+                        if args["save"]: writer_drawed_plot.write(plot_frame)
 
                     # Draw center points
                     thickness = -1
@@ -224,8 +226,10 @@ if __name__ == "__main__":
     # with open("object_pts", "wb") as f:
     #     pickle.dump(object_pts, f)
 
-    writer_drawed_frame.release()
-    writer_drawed_blank.release()
-    writer_drawed_cropped.release()
-    writer_drawed_plot.release()
+    if args["save"]:
+        writer_drawed_frame.release()
+        writer_drawed_blank.release()
+        writer_drawed_cropped.release()
+        writer_drawed_plot.release()
     cap.release()
+    print("DONE!")
