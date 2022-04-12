@@ -46,8 +46,17 @@ optional arguments:
 ```
 
 ```bash
-python tracking.py -v test_videos/football.mp4 -t person
+# run tracking with live representations
+python tracking.py -v test_video/football.mp4 -t person
+
+# run tracking and save result as videos
+python tracking.py -v test_video/football.mp4 -t person -s True
 ```
+
+## Select tracking target
+- When the target which we desire to track is detected (bounding box around target), press "c" and click + drag left mouse to select the target
+- Press Enter to execute tracking or click left mouse to reselect the target 
+
 
 ## Citation
  ```
