@@ -190,9 +190,10 @@ if __name__ == "__main__":
                     # Plot live data
                     if len(object_pts)>1:
                         plotter.plot(object_pts, pause=0.5)
-                        plot_frame = cv2.imread("./output/plot/tracking_plot.png"),
-                        plot_frame = cv2.resize(plot_frame[0], (PLOT_FRAME_SIZE))
-                        if args["save"]: writer_drawed_plot.write(plot_frame)
+                        if args["save"]: 
+                            plot_frame = cv2.imread("./output/plot/tracking_plot.png"),
+                            plot_frame = cv2.resize(plot_frame[0], (PLOT_FRAME_SIZE))
+                            writer_drawed_plot.write(plot_frame)
 
                     # Draw center points
                     thickness = -1

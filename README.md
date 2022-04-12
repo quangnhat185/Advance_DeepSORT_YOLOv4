@@ -11,8 +11,16 @@
 
 ## Set up environment
 ```bash
+# setup conda environment
 $ conda env create -f environment.yml
 $ conda activate deepsort_track 
+
+# download weights
+$ chmod +x download_weights.sh && ./download_weights.sh
+
+# run unit tests to ensure all weights are in correct directories
+# if all tests are passed, proceed to next step
+$ pytest unit_tests.py
 ```
 
 ## Run from terminal
