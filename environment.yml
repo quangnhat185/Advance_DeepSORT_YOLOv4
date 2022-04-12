@@ -1,40 +1,93 @@
 name: deepsort_track
 channels:
+  - anaconda
   - conda-forge
   - defaults
 dependencies:
-  - pip=21.1.1=pyhd8ed1ab_0
-  - python=3.6.13
-  - wheel=0.36.2=pyhd3deb0d_0
+  - _libgcc_mutex=0.1
+  - _openmp_mutex=4.5
+  - backports=1.0
+  - backports.functools_lru_cache=1.6.4
+  - ca-certificates=2022.3.29
+  - decorator=5.1.1
+  - entrypoints=0.4
+  - ipython=5.8.0
+  - ipython_genutils=0.2.0
+  - jupyter_client=5.3.4
+  - jupyter_core=4.6.3
+  - ld_impl_linux-64=2.36.1
+  - libffi=3.4.2
+  - libgcc-ng=11.2.0
+  - libgomp=11.2.0
+  - libnsl=2.0.0
+  - libsodium=1.0.18
+  - libstdcxx-ng=11.2.0
+  - libzlib=1.2.11
+  - ncurses=6.3
+  - openssl=1.1.1n
+  - pexpect=4.8.0
+  - pickleshare=0.7.5
+  - pip=21.1.1
+  - prompt_toolkit=1.0.15
+  - ptyprocess=0.7.0
+  - pygments=2.11.2
+  - python=3.6.15
+  - python-dateutil=2.8.2
+  - python_abi=3.6
+  - pyzmq=22.3.0
+  - readline=8.1
+  - setuptools=58.0.3
+  - simplegeneric=0.8.1
+  - six=1.16.0
+  - sqlite=3.37.1
+  - tk=8.6.12
+  - tornado=6.1
+  - traitlets=4.3.3
+  - wcwidth=0.2.5
+  - wheel=0.37.1
+  - xz=5.2.5
+  - zeromq=4.3.4
+  - zlib=1.2.11
   - pip:
     - absl-py==0.12.0
     - astor==0.8.1
+    - attrs==21.4.0
     - bounding-box==0.1.3
     - cached-property==1.5.2
+    - cycler==0.11.0
     - dataclasses==0.8
     - gast==0.2.2
     - google-pasta==0.2.0
     - grpcio==1.37.1
     - h5py==2.9.0
     - importlib-metadata==4.0.1
+    - iniconfig==1.1.1
     - joblib==1.0.1
     - keras==2.2.5
     - keras-applications==1.0.8
     - keras-preprocessing==1.1.2
+    - kiwisolver==1.3.1
+    - markdown==3.3.4
+    - matplotlib==3.3.4
     - numpy==1.19.5
     - opencv-python==4.5.2.52
     - opt-einsum==3.3.0
+    - packaging==21.3
     - pillow==8.2.0
+    - pluggy==1.0.0
     - protobuf==3.16.0
+    - py==1.11.0
+    - pyparsing==3.0.7
+    - pytest==7.0.1
     - pyyaml==5.4.1
     - scikit-learn==0.22.2
     - scipy==1.5.4
-    - six==1.16.0
     - tensorboard==1.15.0
     - tensorflow==1.15.0
     - tensorflow-estimator==1.15.1
     - termcolor==1.1.0
     - threadpoolctl==2.1.0
+    - tomli==1.2.3
     - typing-extensions==3.10.0.0
     - werkzeug==2.0.0
     - wget==3.2
