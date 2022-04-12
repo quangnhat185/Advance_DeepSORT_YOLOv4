@@ -1,49 +1,32 @@
-## Tracking objects with Deepsort and YoloV4
+# Advance tracking with DeepSORT and YOLOv4
 <p align="center">
 <img src="https://github.com/quangnhat185/Media/blob/main/Advance_DeepSort_YoloV4/final_result.gif" width="1920" />
 </p>
-                                                                                          
-Okay the tracking by ROI does not work. It seems like I need object detectors that provide prediction prediodically. And the counting number of person idea is too trivial, so it is better to try a more unique idea. 
 
-Here is the new approach. It will be a project that track a certain object, plotting its total travelling distance overtime (normal plot), mesuring current speed (bar chart), and crop the object to a side window. 
+## Key features
+  - Select single object to track with Region of Interest (ROI)
+  - Isolate tracking object as cropped frame
+  - Plotting travelled distance and velocity (Applicable only if camera is static)
+  - Tracjectory representation
 
-**Features needed:**
-  - The user select object to track using ROI
-  - Plotting travelling distance over time as side window (normal plot)
-  - Plotting average speed over time as side window (bar chart, it should plott different color for acclerating, medium speed, and walking)
-  - Cropping the object and move it to a side window
-
-**Example:** Tracking Son from a football math footage
-
-### TO-DO-LIST
-  - [x] Filter tracking object with ROI contour
-  - [x] Crop the object box and append it to side
-  - [x] Save object central coordinate
-  - [x] Update yolov4 weight download with following link: https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights
-  - [x] Unitest with pytest
-  - [x] Create marker following tracking point (liner, different color)
-  - [x] Apply it to Son tracking
-  - [ ] Update environment
-  - [ ] Documentation
-  
-
-
-### Set up environment
+## Set up environment
 ```bash
 $ conda env create -f environment.yml
 $ conda activate deepsort_track 
 ```
 
-### Run from terminal
+## Run from terminal
 ```
 usage: use "python tracking.py --help" for more information
+
+Tracking with DeepSort
 
 optional arguments:
   -h, --help            show this help message and exit
   -v VIDEO, --video VIDEO
                         Path to video file
-  -o OBJECTS [OBJECTS ...], --objects OBJECTS [OBJECTS ...]
-                        List of tracked objects
+  -t TARGET [TARGET ...], --target TARGET [TARGET ...]
+                        Type of tracking target (person, car, etc)
   -c CONF, --conf CONF  Confident threshold (deafult=0.3)
   -n NMS, --nms NMS     NMS threshold (default=0.4)
   -d MCD, --mcd MCD     Max cosin distance (default=0.5)
@@ -51,8 +34,46 @@ optional arguments:
   -cl COLORS [COLORS ...], --colors COLORS [COLORS ...]
                         List of colors
   -s SAVE, --save SAVE  Save output video (True/False)
+
 ```
 
 ```bash
 python tracking.py -v test_videos/football.mp4 -t person
 ```
+
+## Citation
+ ```
+ @inproceedings{Wojke2017simple,
+  title={Simple Online and Realtime Tracking with a Deep Association Metric},
+  author={Wojke, Nicolai and Bewley, Alex and Paulus, Dietrich},
+  booktitle={2017 IEEE International Conference on Image Processing (ICIP)},
+  year={2017},
+  pages={3645--3649},
+  organization={IEEE},
+  doi={10.1109/ICIP.2017.8296962}
+}
+
+@inproceedings{Wojke2018deep,
+  title={Deep Cosine Metric Learning for Person Re-identification},
+  author={Wojke, Nicolai and Bewley, Alex},
+  booktitle={2018 IEEE Winter Conference on Applications of Computer Vision (WACV)},
+  year={2018},
+  pages={748--756},
+  organization={IEEE},
+  doi={10.1109/WACV.2018.00087}
+}
+
+@misc{bochkovskiy2020yolov4,
+      title={YOLOv4: Optimal Speed and Accuracy of Object Detection}, 
+      author={Alexey Bochkovskiy and Chien-Yao Wang and Hong-Yuan Mark Liao},
+      year={2020},
+      eprint={2004.10934},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+ ```
+## Credit
+- [Github: LinhanDai/yolov4-deepsort](https://github.com/LinhanDai/yolov4-deepsort)
+- [Github: nwoje/deep_sort](https://github.com/nwojke/deep_sort)
+- [Github: LeonLok/Deep-SORT_YOLOv4](https://github.com/LeonLok/Deep-SORT-YOLOv4)
+
