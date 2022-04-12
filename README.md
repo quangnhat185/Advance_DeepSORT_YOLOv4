@@ -1,6 +1,6 @@
 ## Tracking objects with Deepsort and YoloV4
 <p align="center">
-<img src="https://media.giphy.com/media/oq0YUdfKoBJrrwgRII/giphy.gif" width="1920" />
+<img src="https://github.com/quangnhat185/Media/blob/main/Advance_DeepSort_YoloV4/final_result.gif" width="1920" />
 </p>
                                                                                           
 Okay the tracking by ROI does not work. It seems like I need object detectors that provide prediction prediodically. And the counting number of person idea is too trivial, so it is better to try a more unique idea. 
