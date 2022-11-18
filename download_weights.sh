@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-mkdir encoder
+mkdir encoder output
 
 echo "**Downloading encoder"
 wget "https://github.com/Qidian213/deep_sort_yolov3/raw/master/model_data/mars-small128.pb" -q --show-progress -O encoder/mars-small128.pb
