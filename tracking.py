@@ -22,21 +22,12 @@ import matplotlib.pyplot as plt
 
 import time
 import pickle
-import logging
 
 
 # Size (width, height) of cropped frame with tracked object
 CROP_FRAME_SIZE =  (180,320)
 PLOT_FRAME_SIZE = (1386,716)
 
-# Create log history
-FILE_NAME = os.path.basename(__file__).split(".")[0]
-logging.basicConfig(
-    filename="Logs/%s.log" % (FILE_NAME),
-    filemode="w",
-    level=logging.INFO,
-    format="%(asctime)s %(message)s",
-)
 
 # Create a queue to store bounding box center
 pts = [deque(maxlen=30) for _ in range(9999)]
@@ -98,7 +89,7 @@ if __name__ == "__main__":
 
             # Obtain detected bounding boxes with yolo
             boxes, class_names = yolo.detect_image(frame)
-            logging.info("boxes by yolo: %s" % boxes[0])
+            # logging.info("boxes by yolo: %s" % boxes[0])
 
             # extract features from detected boxes
             features = encoder(frame, boxes)
@@ -109,7 +100,7 @@ if __name__ == "__main__":
                 Detection(bbox, 1.0, feature) for bbox, feature in zip(boxes, features)     
             ]
                                 
-            logging.info("boxes, features: {} ----- {}".format(boxes, features))
+            # logging.info("boxes, features: {} ----- {}".format(boxes, features))
 
             ## Call the tracker
             tracker.predict()
